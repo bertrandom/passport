@@ -9,29 +9,363 @@
         <meta name="author" content="Bertrand Fan">
 
         <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/base/jquery-ui.css" />
+        <link href="/css/bootstrap-slider.css" rel="stylesheet" />
         <style>
+
             body {
-                padding-top: 60px;
+                padding-top: 40px;
             }
+
+            h2 {
+                padding-bottom: 30px;
+                font-family: "garamond-premier-pro-display",serif;
+                font-style: normal;
+                font-weight: 400;
+                font-size: 56px;
+            }
+
+            p, blockquote {
+
+                font-family: "minion-pro",sans-serif;
+                font-style: normal;
+                font-weight: 400;
+                font-size: 30px;
+                line-height: 42px;
+                margin-bottom: 30px;
+
+            }
+
+            .content {
+                margin-top: 50px;
+            }
+
+            .map-container {
+                position: relative;
+            }
+
+            #map {
+                z-index: 1;
+            }
+
+            #map-date {
+                font-family: "garamond-premier-pro-display",serif;
+                font-style: normal;
+                font-weight: 300;
+                font-size: 36px;
+                position:absolute;
+                bottom:-25px;
+                left:0px;
+                z-index: 2;
+                width:400px;
+            }
+
+
+            #slider {
+                margin-top: 50px;
+                width: 65%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .ui-slider-handle {
+                outline: none;
+            }
+
+          .footer {
+            margin-top: 15px;
+            padding: 10px 0 36px;
+            border-top: 1px solid #e5e5e5;
+          }
+
+          .footer p {
+            margin-bottom: 0;
+            color: #555;
+            font-size: 20px;
+            line-height: 24px;
+          }            
+
         </style>
         <link href="/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
         <!--[if lt IE 9]>
           <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
+
+        <script src="/dots.js"></script>
+
+        <script type="text/javascript" src="//use.typekit.net/xbj5aos.js"></script>
+        <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
     </head>
 
     <body>
 
-        <div class="container">
-          <h1>Hello, world!</h1>
+        <div class="container" style="text-align: center;">
+            <h2>My last ten years according to my passport</h2>
+            <div class="map-container">
+                <canvas id="map" width="1000" height="520"></canvas>
+                <span id="map-date"></span>
+            </div>
+            <div>
+                <div id="slider"></div>
+            </div>
         </div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <div class="container content">
+            <div class="row">
+                <div class="span12">
+                    <p>My passport expired last month shortly after I finished rewatching <a href="http://vimeo.com/45838408">this talk by Nicholas Felton at Eyeo2012</a>. There is a part of the talk where he talks about using his father's passport to recreate location history and I thought, "I could do that for my passport."
+
+                    <p>After going through a few pages and recording the entry and exit stamps in a text file, I thought about this <a href="http://www.smithsonianmag.com/arts-culture/Teller-Reveals-His-Secrets.html">article by Teller</a> where he reveals that
+
+                        <blockquote>You will be fooled by a trick if it involves more time, money and practice than you (or any other sane onlooker) would be willing to invest.</blockquote>
+
+                    <p>If you rewatch the Felton talk, you realize that's really what makes the <a href="http://www.feltron.com/">Feltron Annual Reports</a> so special - Felton puts more time and energy into collecting, parsing, and collating the data than he actually does choosing and designing the visualizations.
+
+                    <p>Transcribing a passport is a tedious job. It took me well over two hours to decipher and translate locations and dates from smudged stamps, basically turning this:
+                </div>
+            </div>
+            <div class="row">
+                <div class="span12">
+                    <span style="text-align: center; display:block;">
+                        <a href="http://www.flickr.com/photos/bertrandom/5525537454/"><img src="http://farm6.staticflickr.com/5018/5525537454_f6ce0b1eea_b.jpg" /></a>
+                    </span>
+                    <p style="margin-top: 20px">into this:
+                    <div style="height: 400px; overflow: auto; margin-bottom: 30px;">
+                        <script src="https://gist.github.com/8107a46284882e311a6e.js"></script>
+                    </div>
+                    <p>Piping that file through unix sort and deleting the extraneous lines gave me this:
+                    <div style="height: 400px; overflow: auto; margin-bottom: 30px;">
+                        <script src="https://gist.github.com/9f5f55ba92f0876d7c42.js"></script>
+                    </div>
+                    <p>And then I looked up the country codes for each country and edited it until I got this JSON file:
+                    <div style="height: 400px; overflow: auto; margin-bottom: 30px;">
+                        <script src="https://gist.github.com/f626e9ed1946742512af.js"></script>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span12">
+                    <p>Now that I had my location history in a machine-readable format, I needed a way of visualizing the changes in location over time.
+                    <p>Fortunately, I had been working on something similar at <a href="http://www.jetpac.com">Jetpac</a> for our on-boarding experience. We had found some vector dot maps of the world that we thought would be cool to light up portions of based on the countries that you've been to and wanted to go.
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span12">
+                    <span style="text-align: center; display:block; margin-bottom: 30px;">
+                        <img src="/dotted-worldmap-1.png" />
+                    </span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span12">
+                    <p>Unfortunately, the vector dot maps that we found weren't divided into countries, but we did find some <a href="http://commons.wikimedia.org/wiki/Category:Blank_SVG_maps_of_the_world">normal SVG maps of the world</a> that were. At that point we decided we would just roll our own and <a href="http://drtriumph.com/">Chris</a> came up with a brilliant rasterization strategy.
+                    <p>First, we started with a <a href="http://en.wikipedia.org/wiki/File:World_Blank_Map_(Mercator_projection).svg">normal SVG map</a>.
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span12">
+                    <span style="text-align: center; display:block; margin-bottom: 30px;">
+                        <img src="/projection.png" />
+                    </span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span12">
+                    <p>Since SVG is just XML, I wrote a python script to go through and assign a different shade of grey to every country in the map by modifying the style.
+                    <script src="https://gist.github.com/f684c630663edc106af7.js"></script>
+                    <p>which gave us this:
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span12">
+                    <span style="text-align: center; display:block; margin-bottom: 30px;">
+                        <img src="/map-colorized.png" />
+                    </span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span12">
+                    <p>Then we removed Antarctica and resized that image to a small thumbnail (200x103) using Nearest Neighbor resampling so that the colors would not blend:
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span12">
+                    <span style="text-align: center; display:block; margin-bottom: 30px;">
+                        <img src="/map-small.png" />
+                    </span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span12">
+                    <p>If you zoom in on it a bit, you can see it in all of its pixelated glory:
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span12">
+                    <span style="text-align: center; display:block; margin-bottom: 30px;">
+                        <img src="/map-small-big.png" />
+                    </span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span12">
+                    <p>This final image serves as the guide for drawing our map. We simply loop through every pixel in the image and if the pixel is non-white, we draw a circle on a canvas at the translated position which is calculating by just multiplying the coordinates by a mulitiplier like 5. For example, the pixel at (7,14) which belongs to Alaska may translate to (35,70) and we can draw a circle with it's center at that position. If we wish to color in a country a different color, we determine the country code through a lookup table:
+                    <div style="height: 400px; overflow: auto; margin-bottom: 30px;">
+                        <script src="https://gist.github.com/39228fb245e1a563e991.js"></script>
+                    </div>
+                    <p>The number that we receive from the lookup corresponds to the shade of gray of each country in the image. By reading the red, green, or blue value of the pixel and comparing it to the number, we can determine whether or not we should color in the circle a different color or not.
+                    <p>Once I had a way of drawing a dot map of the world, creating the visualization was pretty straightforward. I divided the ten years into days, specifically 3654 days (don't forget the leap years). Then I wrote a node.js script to parse the trips JSON I hand-crafted earlier and create a lookup table that given a particular day tells me which countries I had been to since the passport epoch (December 17, 2002) and which country I was in on that particular day:
+                    <script src="https://gist.github.com/3e9ab9039b4c9e140e0d.js"></script>
+                    <p>When the slider moves, I calculate the day it's on and use the lookup table to determine which countries to draw as visited and which country to draw as the current country and use the algorithm I described to refresh the map.
+                    <p>That's pretty much it! Thanks for reading this far.</p>
+                </div>
+            </div>
+
+            <footer class="footer">
+                <p class="pull-right">January 25, 2013 - <a href="http://thatsaspicymeatball.com">Bertrand Fan</a> - <a href="https://twitter.com/intent/follow?screen_name=bertrandom">@bertrandom</a></p>
+            </footer>
+
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+        <script src="https://raw.github.com/timrwood/moment/1.7.2/min/moment.min.js"></script>
         <script>
             
             $(document).ready(function(){
-                
+
+                function render(days_since_epoch) {
+
+                    var context = $('#map')[0].getContext('2d');
+
+                    context.clearRect(0,0,$('#map')[0].width,$('#map')[0].height);
+
+                    this.dotSize = 5;
+                    this.dotPadding = 1;
+                    this.pixelMultiplier = 1;
+                    this.blurRadius = 6;
+
+                    var radius = (this.dotSize - 2 * this.dotPadding) * this.pixelMultiplier / 2.0;
+
+                    context.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                    context.shadowColor = 'rgba(0, 0, 0, 0)';
+
+                    context.beginPath();
+
+                    for (countrycode in dots) {
+
+                      for (i = 0; i < dots[countrycode].length; i++) {
+                          var dot = dots[countrycode][i];
+                          var x = dot[0];
+                          var y = dot[1];
+
+                          context.moveTo(x, y);
+                          context.arc(x, y, radius, 0, Math.PI * 2, true);
+                      }
+
+                    }
+
+                    context.closePath();
+                    context.fill();
+
+                    for (countrycode in dots) {
+
+                        if (_.indexOf(trips_lookup[days_since_epoch].current, countrycode) != -1) {
+
+                            context.beginPath();
+                            context.fillStyle = 'rgba(0, 135, 203, 1)';
+                            context.shadowColor = 'rgba(0, 135, 203, 1)';
+                            context.shadowBlur = (this.blurRadius * this.pixelMultiplier);
+
+                            for (i = 0; i < dots[countrycode].length; i++) {
+                                var dot = dots[countrycode][i];
+                                var x = dot[0];
+                                var y = dot[1];
+
+                                context.moveTo(x, y);
+                                context.arc(x, y, radius, 0, Math.PI * 2, true);
+                            }
+
+                            context.closePath();
+                            context.fill();
+
+                        } else if (_.indexOf(trips_lookup[days_since_epoch].been, countrycode) != -1) {
+
+                            context.beginPath();
+                            context.fillStyle = 'rgba(0, 0, 0, 1)';
+                            context.shadowColor = 'rgba(0, 0, 0, 1)';
+                            context.shadowBlur = (this.blurRadius * this.pixelMultiplier);
+
+                            for (i = 0; i < dots[countrycode].length; i++) {
+                                var dot = dots[countrycode][i];
+                                var x = dot[0];
+                                var y = dot[1];
+
+                                context.moveTo(x, y);
+                                context.arc(x, y, radius, 0, Math.PI * 2, true);
+                            }
+
+                            context.closePath();
+                            context.fill();
+
+                        }
+
+                    }
+
+                }
+
+                $.getJSON('/data/trips_lookup.json', function(data) {
+                    trips_lookup = data;
+
+                    $('#map-date').html('December 17, 2002');
+                    var slider_width = $('#slider').width();
+                    var label_width = $('#map-date').width();
+                    var slider_margin_left = parseFloat($('#slider').css('margin-left'));
+                    $('#map-date').css('left', (slider_margin_left - (label_width/2)) + 'px');
+
+                    render(0);
+
+                });
+
+
+                $("#slider").slider({
+                    orientation: "horizontal",
+                    range: "min",
+                    min: 0,
+                    max: 3653,
+                    value: 0,
+                    slide: function (event, ui) {
+
+                        var passport_epoch = moment('Dec 17, 2002');
+                        passport_epoch.add('days', ui.value);
+                        $('#map-date').html(passport_epoch.format('MMMM D, YYYY'));
+
+                        var slider_width = $('#slider').width();
+                        var label_width = $('#map-date').width();
+                        var slider_margin_left = parseFloat($('#slider').css('margin-left'));
+
+                        $('#map-date').css('left', (slider_margin_left + (ui.value / 3653) * slider_width - (label_width/2)) + 'px');
+
+                        render(ui.value);
+
+                    }
+                });
+
+
             });
         
         </script>

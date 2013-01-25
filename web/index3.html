@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="Bertrand Fan">
+
+        <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <style>
+            body {
+                padding-top: 60px;
+            }
+        </style>
+        <link href="/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+        <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+        <script src="/dots.js"></script>
+
+    </head>
+
+    <body>
+
+        <div class="container">
+          <canvas id="country_code_map" width="200" height="103"></canvas>
+          <canvas id="map" width="200" height="103"></canvas>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script>
+            
+            $(document).ready(function(){
+                
+countryLookup = {
+      'ad': 126,
+      'ae': 172,
+      'af': 21,
+      'ag': 130,
+      'ai': 154,
+      'al': 40,
+      'am': 67,
+      'an': 119,
+      'ao': 187,
+      'aq': 228,
+      'ar': 200,
+      'as': 147,
+      'at': 23,
+      'au': 189,
+      'aw': 149,
+      'az': 211,
+      'ba': 52,
+      'bb': 131,
+      'bd': 176,
+      'be': 57,
+      'bf': 2,
+      'bg': 59,
+      'bh': 125,
+      'bi': 60,
+      'bj': 85,
+      'bm': 157,
+      'bn': 107,
+      'bo': 7,
+      'br': 17,
+      'bs': 98,
+      'bt': 93,
+      'bw': 13,
+      'by': 5,
+      'bz': 173,
+      'ca': 209,
+      'cd': 19,
+      'cf': 77,
+      'cg': 63,
+      'ch': 10,
+      'ci': 8,
+      'ck': 145,
+      'cl': 220,
+      'cm': 11,
+      'cn': 54,
+      'co': 26,
+      'cr': 44,
+      'cu': 183,
+      'cv': 109,
+      'cy': 104,
+      'cz': 38,
+      'de': 27,
+      'dj': 61,
+      'dk': 193,
+      'dm': 120,
+      'do': 177,
+      'dz': 9,
+      'ec': 224,
+      'ee': 214,
+      'eg': 49,
+      'eh': 37,
+      'er': 226,
+      'es': 215,
+      'et': 34,
+      'fi': 196,
+      'fj': 95,
+      'fk': 100,
+      'fm': 124,
+      'fo': 116,
+      'fr': 3,
+      'ga': 216,
+      'gb': 43,
+      'gd': 137,
+      'ge': 50,
+      'gf': 1,
+      'gg': 155,
+      'gh': 22,
+      'gi': 160,
+      'gl': 192,
+      'gm': 101,
+      'gn': 201,
+      'gp': 121,
+      'gq': 210,
+      'gr': 223,
+      'gt': 35,
+      'gu': 165,
+      'gw': 178,
+      'gy': 56,
+      'hn': 219,
+      'hr': 191,
+      'ht': 208,
+      'hu': 70,
+      'id': 167,
+      'ie': 202,
+      'il': 81,
+      'im': 164,
+      'in': 53,
+      'iq': 29,
+      'ir': 194,
+      'is': 73,
+      'it': 175,
+      'je': 153,
+      'jm': 103,
+      'jo': 16,
+      'jp': 25,
+      'ke': 15,
+      'kg': 42,
+      'kh': 217,
+      'ki': 123,
+      'km': 114,
+      'kn': 141,
+      'kp': 83,
+      'kr': 218,
+      'kw': 96,
+      'ky': 140,
+      'kz': 227,
+      'la': 82,
+      'lb': 88,
+      'lc': 134,
+      'li': 150,
+      'lk': 222,
+      'lr': 76,
+      'ls': 58,
+      'lt': 79,
+      'lu': 112,
+      'lv': 31,
+      'ly': 4,
+      'ma': 75,
+      'mc': 162,
+      'md': 87,
+      'me': 65,
+      'mg': 169,
+      'mh': 148,
+      'mk': 12,
+      'ml': 18,
+      'mm': 195,
+      'mn': 92,
+      'mp': 127,
+      'mq': 117,
+      'mr': 186,
+      'ms': 142,
+      'mt': 138,
+      'mu': 115,
+      'mv': 139,
+      'mw': 71,
+      'mx': 171,
+      'my': 212,
+      'mz': 181,
+      'na': 47,
+      'nc': 94,
+      'ne': 30,
+      'ng': 203,
+      'ni': 74,
+      'nl': 221,
+      'no': 225,
+      'np': 89,
+      'nr': 159,
+      'nu': 143,
+      'nz': 182,
+      'om': 198,
+      'pa': 199,
+      'pe': 0,
+      'pf': 110,
+      'pg': 190,
+      'ph': 213,
+      'pk': 6,
+      'pl': 46,
+      'pm': 144,
+      'pn': 161,
+      'pr': 105,
+      'ps': 106,
+      'pt': 185,
+      'pw': 128,
+      'py': 45,
+      'qa': 102,
+      're': 113,
+      'ro': 32,
+      'rs': 64,
+      'ru': 51,
+      'rw': 66,
+      'sa': 206,
+      'sb': 197,
+      'sc': 129,
+      'sd': 28,
+      'se': 179,
+      'sg': 166,
+      'sh': 152,
+      'si': 86,
+      'sk': 78,
+      'sl': 174,
+      'sm': 156,
+      'sn': 68,
+      'so': 20,
+      'sr': 36,
+      'st': 118,
+      'sv': 55,
+      'sy': 41,
+      'sz': 91,
+      'tc': 132,
+      'td': 39,
+      'tg': 69,
+      'th': 188,
+      'tj': 72,
+      'tl': 97,
+      'tm': 84,
+      'tn': 204,
+      'to': 122,
+      'tr': 180,
+      'tt': 108,
+      'tv': 158,
+      'tw': 170,
+      'tz': 205,
+      'ua': 14,
+      'ug': 24,
+      'us': 90,
+      'uy': 62,
+      'uz': 229,
+      'va': 163,
+      'vc': 133,
+      've': 184,
+      'vg': 151,
+      'vi': 136,
+      'vn': 207,
+      'vu': 99,
+      'wf': 146,
+      'ws': 111,
+      'ye': 168,
+      'yt': 135,
+      'za': 48,
+      'zm': 33,
+      'zw': 80
+    };
+
+        var reverseLookup = {};
+
+        for (key in countryLookup) {
+            reverseLookup[countryLookup[key]] = key;
+        }
+
+                var img = new Image();
+                img.onload = function() {
+                    var countryCodeContext = $('#country_code_map')[0].getContext('2d');
+                    countryCodeContext.drawImage(this, 0, 0, 200, 103);
+
+                      var imageData = countryCodeContext.getImageData(0, 0, 200, 103).data;
+
+                      this.dotSize = 5;
+                      this.dotPadding = 1;
+                      this.pixelMultiplier = 1;
+
+                      this.dots = [];
+                      this.countryDots = {};
+
+                      var countryCodeWidth = 200;
+                      var countryCodeHeight = 103;
+
+                      var dotIndex = 0;
+                      var radius = (this.dotSize - 2 * this.dotPadding) * this.pixelMultiplier / 2.0;
+                      var dotIncrement = (this.dotSize * this.pixelMultiplier);
+                      var halfDotIncrement = Math.round(dotIncrement / 2);
+                      var y = halfDotIncrement;
+                      for (var i = 0; i < countryCodeHeight; i += 1) {
+                        var x = halfDotIncrement;
+                        for (var j = 0; j < countryCodeWidth; j += 1) {
+                          var r = imageData[4 * (i * countryCodeWidth + j)];
+                          if (r !== 255) {
+                            var dot = [x, y];
+                            this.dots.push(dot);
+
+                            rr = reverseLookup[r];
+
+                            if (typeof this.countryDots[rr] === 'undefined') {
+                              this.countryDots[rr] = [dot];
+                            } else {
+                              this.countryDots[rr].push(dot);
+                            }
+                            dotIndex++;
+                          }
+                          x += dotIncrement;
+                        }
+                        y += dotIncrement;
+                      }
+
+
+
+                     console.log(JSON.stringify(this.countryDots));
+
+
+                }
+                img.src = '/data/map.png';
+
+            });
+        
+        </script>
+
+    </body>
+
+</html>
